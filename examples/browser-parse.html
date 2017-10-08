@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PSDLIB parse demo</title>
+</head>
+<body style="background: lightgray;">
+    <p>Open your console (shortcut usually F12) to see more after you've opened a file.</p>
+    <input type="file" id="input">
+    <script src="../dist/psdlib.js"></script>
+    <script>
+    var body = document.getElementsByTagName('body')[0];
+    var inputElement = document.getElementById("input");
+    inputElement.addEventListener("change", handleFiles, false);
+
+    function handleFiles(e) {
+        var file = inputElement.files[0];
+
+        if (file) {
+            var fileReader = new FileReader();
+
+            fileReader.onload = function(e) {
+                var psd = PSDLIB.parse(e.target.result);
+                console.log(psd);
+
+                body.appendChild(psd.toPng());
+                for(var i=0; i<psd.layers.length; i++) {
+                    body.appendChild(psd.layers[i].toPng());
+                }
+            };
+
+            fileReader.readAsArrayBuffer(file);
+        } else {
+            console.log("Failed to load file!");
+        }
+    }
+    </script>
+</body>
+</html>

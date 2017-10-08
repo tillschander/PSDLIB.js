@@ -1,0 +1,26 @@
+{
+  "name": "psdlib",
+  "version": "0.1.0",
+  "description": "A library for parsing and composing Photoshop Documents.",
+  "main": "src/psdlib.js",
+  "scripts": {
+    "build-debug": "browserify src/psdlib.js -d -s PSDLIB > dist/psdlib.js",
+    "build-min": "browserify src/psdlib.js -s PSDLIB | uglifyjs -c > dist/psdlib.min.js",
+    "build": "npm run build-debug && npm run build-min",
+    "watch": "watchify src/psdlib.js -d -s PSDLIB -o dist/psdlib.js -v",
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Braunbart@bitbucket.org/Braunbart/psd.git"
+  },
+  "author": "Till Schander",
+  "license": "MIT",
+  "homepage": "",
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "mocha": "^3.0.2",
+    "uglify-js": "^2.6.2",
+    "watchify": "^3.7.0"
+  }
+}

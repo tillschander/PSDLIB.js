@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PSDLIB edit demo</title>
+</head>
+<body style="background: lightgray;">
+    <p>See the sourcecode for more info. A file should be downloaded automatically.</p>
+    <p>My version of Photoshop throws errors for files not ending in ".psd". So I recommend manually renaming the file after the download.</p>
+    <input type="file" id="input">
+    <script src="../dist/psdlib.js"></script>
+    <script>
+    var inputElement = document.getElementById("input");
+    inputElement.addEventListener("change", handleFiles, false);
+
+    function handleFiles(e) {
+        var file = inputElement.files[0];
+
+        if (file) {
+            var fileReader = new FileReader();
+
+            fileReader.onload = function(e) {
+                var psd = PSDLIB.parse(e.target.result);
+
+                 // Resetting the image resources forces Photoshop to rebuild them
+                 // Note that you will loose data like slices through this
+                 // You hav to manually edit the resources to avoid this
+                psd.imageResources = [];
+
+                // Adds a new layer on top with a solid orange color
+                psd.layers.push({
+                    top: 0,
+                    left: 0,
+                    bottom: psd.height,
+                    right: psd.width,
+                    name: "New Layer",
+                    channels: [
+                        {id: 0, data: new Uint8Array(psd.height*psd.width).fill(255)},
+                        {id: 1, data: new Uint8Array(psd.height*psd.width).fill(100)},
+                        {id: 2, data: new Uint8Array(psd.height*psd.width).fill(0)}
+                    ]
+                });
+                var file = PSDLIB.compose(psd, {output: 'blob'});
+                window.location = window.URL.createObjectURL(file);
+            };
+
+            fileReader.readAsArrayBuffer(file);
+        } else {
+            console.log("Failed to load file!");
+        }
+    }
+    </script>
+</body>
+</html>
